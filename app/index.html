@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Todo app</title>
+  <link rel="stylesheet" href="css/xeditable.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="css/css.css" type="text/css" media="screen" />
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script type="text/javascript" src="js/underscore.min.js"></script>
+  <script type="text/javascript" src="js/angular/angular_cookies.min.js"></script>
+  <script type="text/javascript" src="js/angular/angular-ui-router.min.js"></script>
+  <script type="text/javascript" src="js/angular/xeditable.min.js"></script>
+  <script type="text/javascript" src="js/angular/app.js"></script>
+  <script type="text/javascript" src="js/angular/controllers/sessionsController.js"></script>
+  <script type="text/javascript" src="js/angular/controllers/itemsController.js"></script>
+</head>
+
+<body ng-app="app" ng-controller="sessionsController" ui-view>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">TodoApp</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a ng-show="userSignedIn" href="#" ng-click="logOut()">Logout</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+  </nav>
+
+
+  <div class="error" ng-show="errorMessage">
+    {{errorMessage}}
+  </div>
+
+  <form ng-hide="userSignedIn" ovalidate class="simple-form">
+    E-mail:
+    <input type="email" ng-model="email" />
+    <br/> password:
+    <input type="password" ng-model="password" />
+    <br />
+    <input type="button" ng-click="logIn()" value="login" />
+  </form>
+
+  <div ng-show="userSignedIn">
+    You are logged in as: {{userData.email}}
+    <div>Your lists are:</div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Description</th>
+          <th>Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="list in lists">
+          <td>
+            <a ui-sref="items({listId: list.id})">{{list.id}}</a>
+          </td>
+          <td>
+            <a editable-text="list.description" onbeforesave="updateListDescription($data, list)">{{list.description || "empty"}}</a>
+          </td>
+          <td>
+            <a editable-text="list.title" onbeforesave="updateListTitle($data, list)">{{list.title || "empty"}}</a>
+          </td>
+          <td>
+            <input type="button" ng-click="destroy(list.id)" value="Destroy" />
+            <input type="button" ui-sref="items({listId: list.id})" value="Show"/>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    Create new list
+    <form ovalidate class="simple-form">
+      Title:
+      <input type="text" ng-model="newList.title" />
+      <br/> Description:
+      <input type="text" ng-model="newList.description" />
+      <br/>
+      <input type="button" ng-click="createList()" value="Create" />
+    </form>
+  </div>
+
+</body>
+
+</html>
